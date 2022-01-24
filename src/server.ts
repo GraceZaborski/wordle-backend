@@ -227,6 +227,74 @@ app.post<{ id: number }, {}, Comment>("/comments/:id", async (req, res) => {
   }
 });
 
+// <----------------------------------- score -------------------------------------------->
+
+//get a user's score
+app.get<{ id: number }>("/score/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const dbres = await client.query('SELECT id, username, complete FROM users WHERE id=$1', [id]);
+    if (dbres.rows[0].complete === false) {
+      res.status(200).json({
+        status: "success",
+        message: "User hasn't completed the daily wordle",
+        data: dbres.rows
+      });
+    } else {
+      const dbres = await client.query('SELECT * FROM users WHERE id=$1', [id]);
+      if (dbres.rows[0].complete === false) {
+        res.status(200).json({
+          status: "success",
+          message: "Received user's score",
+          data: dbres.rows,
+        })
+      }
+      else {
+        res.status(500).json({
+          status: "fail",
+          message: "Could not receive user's score",
+          data: dbres.rows,
+        })
+      }
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
+});
+
+//add a new comment
+app.put<{ id: number }>("/score/:id", async (req, res) => {
+  const { id } = req.params;
+  const { score } = req.body;
+  try {
+    const alreadyTru = await client.query('SELECT complete FROM users WHERE id=$1', [id]);
+    if (alreadyTru.rows[0].complete == true) {
+      res.status(500).json({
+        status: "fail",
+        message: "User has already completed the daily puzzle",
+        data: alreadyTru.rows,
+      })
+    } else {
+      const dbres = await client.query('UPDATE users SET complete=$1, score=$2 WHERE id=$3 RETURNING *', [true, score, id]);
+      if (dbres.rows) {
+        res.status(200).json({
+          status: "success",
+          message: "Score and progress status updated",
+          data: dbres.rows
+        })
+      } else {
+        res.status(500).json({
+          status: "fail",
+          message: "Couldn't udpate score or progress",
+          data: dbres.rows,
+        })
+      }
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
+});
+
 
 //Start the server on the given port
 const port = process.env.PORT;
