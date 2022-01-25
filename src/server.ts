@@ -57,11 +57,33 @@ interface Comment {
 
 // <----------------------------------- user endpoints -------------------------------------------->
 
+//get a all user's ids and usernames
+app.get("/users", async (req, res) => {
+  try {
+    const dbres = await client.query('SELECT username, id from users');
+    if (dbres.rows) {
+      res.status(200).json({
+        status: "success",
+        message: "Returned all users",
+        data: dbres.rows
+      });
+    } else {
+      res.status(500).json({
+        status: "fail",
+        message: "Couldn't get users",
+        data: dbres.rows,
+      })
+    }
+  } catch (error) {
+    console.error(error.message)
+  }
+});
+
 //get a user's username
 app.get<{ id: number }>("/username/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const dbres = await client.query('SELECT username from users WHERE id=$1', [id]);
+    const dbres = await client.query('SELECT username, id from users WHERE id=$1', [id]);
     if (dbres.rows) {
       res.status(200).json({
         status: "success",
