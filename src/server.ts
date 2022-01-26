@@ -55,7 +55,12 @@ interface Comment {
   comment: string;
 }
 
-// <----------------------------------- user endpoints -------------------------------------------->
+interface Score {
+  score: number;
+}
+
+
+// <----------------------------------- users -------------------------------------------->
 
 //get a all user's ids and usernames
 app.get("/users", async (req, res) => {
@@ -79,6 +84,7 @@ app.get("/users", async (req, res) => {
   }
 });
 
+//NOT IN USE CURRENTLY
 //get a user's username
 app.get<{ id: number }>("/username/:id", async (req, res) => {
   const { id } = req.params;
@@ -102,6 +108,7 @@ app.get<{ id: number }>("/username/:id", async (req, res) => {
   }
 });
 
+//NOT IN USE CURRENTLY
 //add a new user
 app.post<{}, {}, Username>("/user", async (req, res) => {
   const { username } = req.body;
@@ -136,11 +143,11 @@ app.post<{}, {}, Username>("/user", async (req, res) => {
 
 // <----------------------------------- words -------------------------------------------->
 
-//get a user's username
+//get a user's guessed words so far and return progress 
 app.get<{ id: number }>("/words/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const dbres = await client.query('SELECT row, word from words WHERE user_id=$1', [id]);
+    const dbres = await client.query('SELECT row, word, complete FROM words w join users u ON w.user_id = u.id WHERE w.user_id = $1', [id]);
     if (dbres.rows) {
       res.status(200).json({
         status: "success",
@@ -161,7 +168,7 @@ app.get<{ id: number }>("/words/:id", async (req, res) => {
 
 //post a user's new word with associated row 
 app.post<{ id: number }, {}, UsersWords>("/words/:id", async (req, res) => {
-  const { row, word } = req.body;
+  const { word } = req.body;
   const { id } = req.params;
   try {
     const dbres = await client.query('SELECT * FROM words where user_id=$1', [id]);
@@ -251,6 +258,7 @@ app.post<{ id: number }, {}, Comment>("/comments/:id", async (req, res) => {
 
 // <----------------------------------- score -------------------------------------------->
 
+//NOT CURRENTLY IN USE
 //get a user's score
 app.get<{ id: number }>("/score/:id", async (req, res) => {
   const { id } = req.params;
@@ -284,8 +292,9 @@ app.get<{ id: number }>("/score/:id", async (req, res) => {
   }
 });
 
-//add a new comment
-app.put<{ id: number }>("/score/:id", async (req, res) => {
+//NOT CURRENTLY IN USE
+//add a user's score
+app.put<{ id: number }, {}, Score>("/score/:id", async (req, res) => {
   const { id } = req.params;
   const { score } = req.body;
   try {
