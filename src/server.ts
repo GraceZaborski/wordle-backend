@@ -22,9 +22,9 @@ config(); //Read .env file lines as though they were env vars.
 const dbConfig = process.env.LOCAL
   ? { database: `${process.env.LOCAL_DB}` }
   : {
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-  };
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    };
 
 export const app = express();
 
