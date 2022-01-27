@@ -12,7 +12,7 @@
     "type-check": "tsc --noEmit",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
-    "lint": "eslint src",
+    "lint": "eslint",
     "test:watch": "react-scripts test"
   },
   "author": "your name here",
