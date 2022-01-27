@@ -8,7 +8,12 @@
     "start:dev": "LOCAL=true nodemon src/server.ts",
     "start:devh": "nodemon src/server.test.ts",
     "postinstall": "tsc",
-    "test": "jest src/server.test.ts"
+    "test": "jest src/server.test.ts",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "lint": "eslint src",
+    "test:watch": "react-scripts test"
   },
   "author": "your name here",
   "license": "ISC",
@@ -26,7 +31,9 @@
     "@types/jest": "^27.4.0",
     "@types/pg": "^7.14.7",
     "@types/supertest": "^2.0.11",
+    "eslint": "^8.7.0",
     "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
     "supertest": "^6.2.2",
     "ts-jest": "^27.1.3",
     "ts-node": "^10.4.0",
