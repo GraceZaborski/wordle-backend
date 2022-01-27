@@ -1,18 +1,18 @@
 ---creating tables
 
-CREATE users (
+CREATE TABLE users (
     id serial PRIMARY KEY,
     username varchar(255) NOT NULL,
     complete boolean DEFAULT false,
     score integer 
 );
 
-CREATE words (
+CREATE TABLE words (
     user_id integer NOT NULL,
     row integer NOT NULL,
     word varchar(255) NOT NULL,
-    PRIMARY KEY (user_id, row)
-    FOREIGN KEY user_id 
+    PRIMARY KEY (user_id, row),
+    FOREIGN KEY (user_id) 
     REFERENCES users(id)
 );
 
