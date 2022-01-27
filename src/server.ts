@@ -357,6 +357,30 @@ app.put<{ id: number }, {}, Score>("/score/:id", async (req, res) => {
   }
 });
 
+// <----------------------------------- reset after 24 hrs -------------------------------------------->
+
+//delete all user's word and progress data (completeness and score)
+app.delete("/delete", async (req, res) => {
+  try {
+    const dbres = await client.query("DELETE from words returning *");
+    if (dbres.rows) {
+      res.status(200).json({
+        status: "success",
+        message: "Reset table data",
+        data: dbres.rows,
+      });
+    } else {
+      res.status(500).json({
+        status: "fail",
+        message: "Couldn't reset table data",
+        data: dbres.rows,
+      });
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
