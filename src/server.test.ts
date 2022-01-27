@@ -1,6 +1,9 @@
 import supertest from "supertest";
 import { app, client, server } from "./server";
 
+//Start the server on the given port
+const port = 4000;
+
 describe("GET /users", () => {
   test("get user ids and usernames", async () => {
     const response = await supertest(app).get("/users");
