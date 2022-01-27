@@ -360,7 +360,7 @@ app.put<{ id: number }, {}, Score>("/score/:id", async (req, res) => {
 // <----------------------------------- reset after 24 hrs -------------------------------------------->
 
 //delete all user's word and progress data (completeness and score)
-app.delete("/delete", async (req, res) => {
+app.delete("/reset", async (req, res) => {
   try {
     const dbres = await client.query("DELETE from words returning *");
     if (dbres.rows) {
