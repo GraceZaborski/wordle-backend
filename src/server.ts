@@ -362,20 +362,14 @@ app.put<{ id: number }, {}, Score>("/score/:id", async (req, res) => {
 //delete all user's word and progress data (completeness and score)
 app.delete("/reset", async (req, res) => {
   try {
-    const dbres = await client.query("DELETE from words returning *");
-    if (dbres.rows) {
-      res.status(200).json({
-        status: "success",
-        message: "Reset table data",
-        data: dbres.rows,
-      });
-    } else {
-      res.status(500).json({
-        status: "fail",
-        message: "Couldn't reset table data",
-        data: dbres.rows,
-      });
-    }
+    const dbres = await client.query(
+      "UPDATE users SET complete = false, score = 0 returning *; DELETE from words returning *; "
+    );
+    res.status(200).json({
+      status: "success",
+      message: "Reset table data",
+      data: dbres.rows,
+    });
   } catch (error) {
     console.error(error.message);
   }
