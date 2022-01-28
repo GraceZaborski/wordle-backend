@@ -22,9 +22,9 @@ config(); //Read .env file lines as though they were env vars.
 const dbConfig = process.env.LOCAL
   ? { database: `${process.env.LOCAL_DB}` }
   : {
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-    };
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+  };
 
 export const app = express();
 
@@ -362,20 +362,14 @@ app.put<{ id: number }, {}, Score>("/score/:id", async (req, res) => {
 //delete all user's word and progress data (completeness and score)
 app.delete("/reset", async (req, res) => {
   try {
-    const dbres = await client.query("DELETE from words returning *");
-    if (dbres.rows) {
-      res.status(200).json({
-        status: "success",
-        message: "Reset table data",
-        data: dbres.rows,
-      });
-    } else {
-      res.status(500).json({
-        status: "fail",
-        message: "Couldn't reset table data",
-        data: dbres.rows,
-      });
-    }
+    const dbres = await client.query(
+      "UPDATE users SET complete = false, score = 0 returning *; DELETE from words returning *; "
+    );
+    res.status(200).json({
+      status: "success",
+      message: "Reset table data",
+      data: dbres.rows,
+    });
   } catch (error) {
     console.error(error.message);
   }
